@@ -1,40 +1,20 @@
 const app = require('express')();
 const fs = require('fs');
-
-/*let runPy = new Promise(function(success, nosuccess) {
-
-    const spawn = require('child_process').spawn;
-    const pyprog = spawn('python', ['./../classify.py']);
-
-    pyprog.stdout.on('data', function(data) {
-        success(data);
-    });
-    pyprog.stderr.on('data', (data) => {
-        nosuccess(data);
-    });
-});*/
+//const { spawn } = require('child_process');
+//const pythonProgram = spawn('python', ['./classify.py']);
 
 app.get('/', (req, res) => {
     res.send('Bienvenu sur le serveur');
 
-    const { spawn } = require('child_process');
-    const pyprog = spawn('python', ['./classify.py']);
+    //const { spawn } = require('child_process');
+    //const pyprog = spawn('python', ['./classify.py']);
 
-    pyprog.stdout.on('data', function(data) {
+    pythonProgram.stdout.on('data', function(data) {
 	console.log('data stdout' , data.toString('utf8'));
-        //success(data);
     });
-
-    pyprog.stderr.on('data', (data) => {
+    pythonProgram.stderr.on('data', (data) => {
 	console.log('data stderr', data.toString('utf8'))
-        //nosuccess(data);
     });
-
-    /*runPy.then(function(fromRunpy) {
-        console.log(fromRunpy.toString());
-        res.end(fromRunpy);
-    });*/
-
 });
 
 function rawBody(req, res, next) {
@@ -57,13 +37,21 @@ function rawBody(req, res, next) {
 
 app.post('/upload-image', rawBody, function (req, res) {
     if (req.rawBody && req.bodyLength > 0) {
+	const spawn = require('child_process').spawn;
+    	const pythonProgram = spawn('python', ['./classify.py']);
 	var image = req.rawBody;
 	fs.writeFile('./test/newImage.jpg', image, function(err) {
+		console.log("image saved !");
+		pythonProgram.stdout.on('data', function(data){
+			console.log('data script python', data.toString('utf8'));
+		});
   		// If an error occurred, show it and return
   		if(err){
+			pythonProgram.stderr.on('data', (data) => {
+				console.log('Erreur', data.toString('utf8'));
+			});
 			console.error(err);
 		}
-		console.log("image saved !");
   		// Successfully wrote binary contents to the file!
 	});
         res.send(200, {status: 'OK'});
