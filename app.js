@@ -32,8 +32,9 @@ app.post('/upload-image', rawBody, function (req, res) {
 		console.log("image saved !");
 		pythonProgram.stdout.on('data', function(data){
 			let json_data = JSON.parse(data);
-			let obj  = { "result": json_data };
+			let obj = { "result": json_data };
 			console.log("json", obj.result[0]);
+			res.send(200, obj);
 		});
   		// If an error occurred, show it and return
   		if(err){
@@ -44,7 +45,8 @@ app.post('/upload-image', rawBody, function (req, res) {
 		}
   		// Successfully wrote binary contents to the file!
 	});
-        res.send(200, {status: 'OK'});
+
+        //res.send(200, obj);
     } else {
         res.send(500);
     }
