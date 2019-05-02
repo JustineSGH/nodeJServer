@@ -31,7 +31,9 @@ app.post('/upload-image', rawBody, function (req, res) {
 	fs.writeFile('./test/newImage.jpg', image, function(err) {
 		console.log("image saved !");
 		pythonProgram.stdout.on('data', function(data){
-			console.log(data.toString('utf8'));
+			let json_data = JSON.parse(data);
+			let obj  = { "result": json_data };
+			console.log("json", obj.result[0]);
 		});
   		// If an error occurred, show it and return
   		if(err){
