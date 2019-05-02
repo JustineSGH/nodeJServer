@@ -1,20 +1,8 @@
 const app = require('express')();
 const fs = require('fs');
-//const { spawn } = require('child_process');
-//const pythonProgram = spawn('python', ['./classify.py']);
 
 app.get('/', (req, res) => {
     res.send('Bienvenu sur le serveur');
-
-    //const { spawn } = require('child_process');
-    //const pyprog = spawn('python', ['./classify.py']);
-
-    pythonProgram.stdout.on('data', function(data) {
-	console.log('data stdout' , data.toString('utf8'));
-    });
-    pythonProgram.stderr.on('data', (data) => {
-	console.log('data stderr', data.toString('utf8'))
-    });
 });
 
 function rawBody(req, res, next) {
@@ -43,7 +31,7 @@ app.post('/upload-image', rawBody, function (req, res) {
 	fs.writeFile('./test/newImage.jpg', image, function(err) {
 		console.log("image saved !");
 		pythonProgram.stdout.on('data', function(data){
-			console.log('data script python', data.toString('utf8'));
+			console.log(data.toString('utf8'));
 		});
   		// If an error occurred, show it and return
   		if(err){
